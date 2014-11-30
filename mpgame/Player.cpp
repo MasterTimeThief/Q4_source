@@ -1126,7 +1126,7 @@ idPlayer::idPlayer() {
 	forceRespawn			= false;
 // RITUAL BEGIN
 // squirrel: added DeadZone multiplayer mode
-	allowedToRespawn		= true;
+	allowedToRespawn		= false; //CUSTOM DEATH
 // squirrel: Mode-agnostic buymenus
 	inBuyZone				= false;
 	inBuyZonePrev			= false;
@@ -9301,6 +9301,7 @@ Called every tic for each player
 */
 void idPlayer::Think( void ) {
 	renderEntity_t *headRenderEnt;
+	int			armorCount;
 
 	if ( talkingNPC ) {
 		if ( !talkingNPC.IsValid() ) {
@@ -9662,6 +9663,15 @@ void idPlayer::Think( void ) {
 		inBuyZone = false;
 
 	inBuyZonePrev = false;
+
+	//CUSTOM THINK
+	if (flashlightOn == true && inventory.armor > 0) 
+	{
+		armorCount = inventory.armor;
+		armorCount--;
+		inventory.armor = armorCount;
+	}
+
 }
 
 /*
@@ -12958,6 +12968,14 @@ void idPlayer::ToggleFlashlight ( void ) {
 	// Dead people can use flashlights
 // RAVEN BEGIN
 // mekberg: check to see if the weapon is enabled.
+
+	//CUSTON FLASHLIGHT
+	if (inventory.armor <= 0)
+	{
+		flashlightOn = false;
+		return;
+	}
+
 	if ( health <= 0 || !weaponEnabled ) {
 		return;
 	}

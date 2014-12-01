@@ -206,7 +206,7 @@ rvWeaponGauntlet::Attack
 ================
 */
 void rvWeaponGauntlet::Attack ( void ) {
-	trace_t		tr;
+	/*trace_t		tr;
 	idEntity*	ent;
 	
 	// Cast a ray out to the lock range
@@ -299,7 +299,7 @@ void rvWeaponGauntlet::Attack ( void ) {
 			PlayLoopSound( LOOP_NONE );
 		}
 		nextAttackTime = gameLocal.time + fireRate;
-	}
+	}*/
 }
 
 /*

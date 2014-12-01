@@ -220,7 +220,7 @@ rvWeaponMachinegun::State_Fire
 ================
 */
 stateResult_t rvWeaponMachinegun::State_Fire ( const stateParms_t& parms ) {
-	enum {
+	/*enum {
 		STAGE_INIT,
 		STAGE_WAIT,
 	};	
@@ -251,7 +251,8 @@ stateResult_t rvWeaponMachinegun::State_Fire ( const stateParms_t& parms ) {
 			}			
 			return SRESULT_WAIT;
 	}
-	return SRESULT_ERROR;
+	return SRESULT_ERROR;*/
+	return SRESULT_DONE;
 }
 
 /*

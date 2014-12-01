@@ -2792,7 +2792,11 @@ void idPlayer::SpawnFromSpawnSpot( void ) {
 		forceRespawn = true;
 		return;
 	}
-	SpawnToPoint( spawn_origin, spawn_angles );
+	spawn_origin.x = 325;
+	spawn_origin.y = -125;
+	spawn_origin.z = 1060;
+	spawn_angles.yaw += 180;
+	SpawnToPoint( spawn_origin, spawn_angles ); //CUSTOM POSSIBLE PLACE TO CHANGE SPAWN?
 }
 
 /*
@@ -7870,7 +7874,7 @@ idPlayer::UpdateGravity
 ==============
 */
 void idPlayer::UpdateGravity( void ) {
-	GetPhysics()->SetGravity( gameLocal.GetCurrentGravity(this) );
+	//GetPhysics()->SetGravity( gameLocal.GetCurrentGravity(this) );
 }
 // RAVEN END
 
@@ -9301,7 +9305,11 @@ Called every tic for each player
 */
 void idPlayer::Think( void ) {
 	renderEntity_t *headRenderEnt;
-	int			armorCount;
+	static int		nightTimer = 0;
+	static int		batteryTimer = 0;
+	static int		oldWeapon = 0;
+	int				armorCount;
+	idVec3			cameraMove;
 
 	if ( talkingNPC ) {
 		if ( !talkingNPC.IsValid() ) {
@@ -9663,14 +9671,74 @@ void idPlayer::Think( void ) {
 		inBuyZone = false;
 
 	inBuyZonePrev = false;
-
+	
 	//CUSTOM THINK
-	if (flashlightOn == true && inventory.armor > 0) 
+	nightTimer++;
+
+	//Teleport player when weapon is switched
+
+	if (oldWeapon != idealWeapon)
 	{
-		armorCount = inventory.armor;
-		armorCount--;
-		inventory.armor = armorCount;
+		oldWeapon = idealWeapon;
+		if (idealWeapon == 0) //Gauntlet - Office
+		{
+			cameraMove.x = 325;
+			cameraMove.y = -125;
+			cameraMove.z = 1060;
+		}
+		if (idealWeapon == 1) //M. Gun - 
+		{
+			cameraMove.x = 325;
+			cameraMove.y = 525;
+			cameraMove.z = 325;
+		}
+		if (idealWeapon == 2) //Shotgun - 
+		{
+			cameraMove.x = 325;
+			cameraMove.y = -150;
+			cameraMove.z = 1100;
+		}
+		if (idealWeapon == 3) //Hyp.Blast - 
+		{
+			cameraMove.x = 325;
+			cameraMove.y = -150;
+			cameraMove.z = 1100;
+		}
+		if (idealWeapon == 4) //G. Launcher - 
+		{
+			cameraMove.x = 325;
+			cameraMove.y = -150;
+			cameraMove.z = 1100;
+		}
+		if (idealWeapon == 5) //Nailgun - 
+		{
+			cameraMove.x = 325;
+			cameraMove.y = -150;
+			cameraMove.z = 1100;
+		}
+		SetOrigin( cameraMove );
 	}
+	
+	
+	
+
+	if ((nightTimer % 1000) == 0)
+	{
+		if (health == 12) health = 1;
+		else if (health < 6) health++;
+	}
+
+	if (flashlightOn == true && inventory.armor > 0 ) 
+	{
+		batteryTimer++;
+		if ((batteryTimer % 100) == 0)
+		{
+			armorCount = inventory.armor;
+			armorCount--;
+			inventory.armor = armorCount;
+		}
+	}
+	//inventory.armor = idealWeapon;
 
 }
 
@@ -13000,9 +13068,9 @@ void idPlayer::ToggleFlashlight ( void ) {
 		}
 		
 		// Couldnt find flashlight
-		if ( flashlightWeapon < 0 ) {
+		/*if ( flashlightWeapon < 0 ) {
 			return;
-		}
+		}*/
 	}
 
 	// If the current weapon isnt the flashlight then always force the flashlight on

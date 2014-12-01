@@ -635,7 +635,7 @@ Fire the weapon
 ================
 */
 stateResult_t rvWeaponNailgun::State_Fire( const stateParms_t& parms ) {
-	enum {
+	/*enum {
 		STAGE_INIT,
 		STAGE_FIRE,
 		STAGE_FIREWAIT,
@@ -711,7 +711,8 @@ stateResult_t rvWeaponNailgun::State_Fire( const stateParms_t& parms ) {
 			}
 			return SRESULT_WAIT;
 	}
-	return SRESULT_ERROR;
+	return SRESULT_ERROR;*/
+	return SRESULT_DONE;
 }
 
 /*

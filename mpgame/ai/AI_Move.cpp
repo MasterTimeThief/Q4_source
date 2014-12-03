@@ -845,7 +845,7 @@ Initialize a new movement by setting up the movement structure
 */
 bool idAI::StartMove ( aiMoveCommand_t command, const idVec3& goalOrigin, int goalArea, idEntity* goalEntity, aasFeature_t* feature, float range ) {
 	// If we are already there then we are done
-	if ( ReachedPos( goalOrigin, command ) ) {
+	/*if ( ReachedPos( goalOrigin, command ) ) {
 		StopMove( MOVE_STATUS_DONE );
 		return true;
 	}
@@ -869,6 +869,8 @@ bool idAI::StartMove ( aiMoveCommand_t command, const idVec3& goalOrigin, int go
 
 	OnStartMoving ( );
 	
+	return true;*/
+	//StopMove( MOVE_STATUS_DONE );
 	return true;
 }
 

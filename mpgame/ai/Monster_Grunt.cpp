@@ -292,7 +292,7 @@ rvMonsterGrunt::State_Torso_LeapAttack
 ================
 */
 stateResult_t rvMonsterGrunt::State_Torso_LeapAttack ( const stateParms_t& parms ) {
-	enum {
+	/*enum {
 		STAGE_ANIM,
 		STAGE_ANIM_WAIT,
 	};
@@ -314,5 +314,6 @@ stateResult_t rvMonsterGrunt::State_Torso_LeapAttack ( const stateParms_t& parms
 			}
 			return SRESULT_WAIT;
 	}
-	return SRESULT_ERROR;
+	return SRESULT_ERROR;*/
+	return SRESULT_DONE;
 }

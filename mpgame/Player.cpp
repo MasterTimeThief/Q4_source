@@ -9310,6 +9310,9 @@ void idPlayer::Think( void ) {
 	static int		oldWeapon = 0;
 	int				armorCount;
 	idVec3			cameraMove;
+	idAngles		cameraAngle;
+
+	cameraAngle = spawnAngles;
 
 	if ( talkingNPC ) {
 		if ( !talkingNPC.IsValid() ) {
@@ -9674,61 +9677,62 @@ void idPlayer::Think( void ) {
 	
 	//CUSTOM THINK
 	nightTimer++;
-
+	//StartSound( "snd_skipcinematic", SND_CHANNEL_ANY, 0, false, NULL );
 	//Teleport player when weapon is switched
 
 	if (oldWeapon != idealWeapon)
 	{
 		oldWeapon = idealWeapon;
-		if (idealWeapon == 0) //Gauntlet - Office
+		//cameraAngle.yaw = 180;
+		if (idealWeapon == 1) //M. Gun - Office
 		{
 			cameraMove.x = 325;
 			cameraMove.y = -125;
 			cameraMove.z = 1060;
+			cameraAngle.yaw = 90;
 		}
-		if (idealWeapon == 1) //M. Gun - 
+		if (idealWeapon == 2) //Shotgun - Tunnel Opening
 		{
 			cameraMove.x = 325;
-			cameraMove.y = 525;
+			cameraMove.y = 925;
 			cameraMove.z = 325;
+			cameraAngle.yaw = 225;
 		}
-		if (idealWeapon == 2) //Shotgun - 
+		if (idealWeapon == 3) //Hyp. Blast - Lightning Gun spawn
 		{
-			cameraMove.x = 325;
-			cameraMove.y = -150;
-			cameraMove.z = 1100;
+			cameraMove.x = 1725;
+			cameraMove.y = 1300;
+			cameraMove.z = 1030;
+			cameraAngle.yaw = 180;
 		}
-		if (idealWeapon == 3) //Hyp.Blast - 
+		if (idealWeapon == 4) //G. Launcher - Upper Hall Corner
 		{
-			cameraMove.x = 325;
-			cameraMove.y = -150;
-			cameraMove.z = 1100;
+			cameraMove.x = 1800;
+			cameraMove.y = 0;
+			cameraMove.z = 900;
+			cameraAngle.yaw = 135;
 		}
-		if (idealWeapon == 4) //G. Launcher - 
+		if (idealWeapon == 5) //Nailgun - Center Circle
 		{
-			cameraMove.x = 325;
-			cameraMove.y = -150;
-			cameraMove.z = 1100;
+			cameraMove.x = 1025;
+			cameraMove.y = 800;
+			cameraMove.z = 460;
+			cameraAngle.yaw = 0;
 		}
-		if (idealWeapon == 5) //Nailgun - 
-		{
-			cameraMove.x = 325;
-			cameraMove.y = -150;
-			cameraMove.z = 1100;
-		}
+		SetViewAngles( cameraAngle );
 		SetOrigin( cameraMove );
 	}
 	
 	
 	
 
-	if ((nightTimer % 1000) == 0)
+	if ((nightTimer % 5000) == 0)
 	{
 		if (health == 12) health = 1;
 		else if (health < 6) health++;
 	}
-
-	if (flashlightOn == true && inventory.armor > 0 ) 
+	
+	if ((flashlightOn == true && inventory.armor > 0 ) || (idealWeapon > 1))
 	{
 		batteryTimer++;
 		if ((batteryTimer % 100) == 0)

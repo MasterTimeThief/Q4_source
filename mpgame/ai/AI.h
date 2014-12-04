@@ -853,6 +853,10 @@ public:
 
 	float					announceRate;			// How often (0 - 1.0f) the AI will make certain announcements.
 
+	//CUSTOM VARIABLES
+	bool					location[5];
+
+
 	rvAICombat_t			combat;					// Members related to combat state
 	rvAIPassive_t			passive;				// Members related to passive state
 	rvAIEnemy_t				enemy;					// Members related to tracking enemies

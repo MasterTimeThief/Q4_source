@@ -9690,6 +9690,7 @@ void idPlayer::Think( void ) {
 			cameraMove.y = -125;
 			cameraMove.z = 1060;
 			cameraAngle.yaw = 90;
+			StartSound( "snd_skipcinematic", SND_CHANNEL_ANY, 0, false, NULL );
 		}
 		if (idealWeapon == 2) //Shotgun - Tunnel Opening
 		{
@@ -9724,7 +9725,6 @@ void idPlayer::Think( void ) {
 	}
 	
 	
-	
 
 	if ((nightTimer % 5000) == 0)
 	{
@@ -9742,8 +9742,6 @@ void idPlayer::Think( void ) {
 			inventory.armor = armorCount;
 		}
 	}
-	//inventory.armor = idealWeapon;
-
 }
 
 /*

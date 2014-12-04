@@ -6,6 +6,7 @@ AI.cpp
 ================
 */
 
+#include <cstdlib>
 #include "../../idlib/precompiled.h"
 #pragma hdrstop
 
@@ -1130,6 +1131,28 @@ bool idAI::DoDormantTests ( void ) {
 	return idActor::DoDormantTests ( );
 }
 
+/*bool moveCheck (int &oldLoc, int newLoc, bool listLoc[])
+{
+	if (listLoc[newLoc]) return false;
+	if (oldLoc == 1
+}*/
+
+void originChange(idVec3 &originRef, int location)
+{
+	if (location % 2 == 1) //office
+	{
+		originRef.x = 325;
+		originRef.y = -105;
+		originRef.z = 1060;
+	}
+	else if (location % 2 == 0) //center
+	{
+		originRef.x = 1280;
+		originRef.y = 784;
+		originRef.z = 464;
+	} 
+}
+
 /*
 =====================
 idAI::Think
@@ -1243,6 +1266,38 @@ void idAI::Think( void ) {
 	if ( ai_speeds.GetBool ( ) ) {
 		aiManager.timerThink.Stop ( );
 	}
+
+	//CUSTOM THINK
+	static int	mon1Location = 0;
+	static int	mon2Location = 0;
+	static bool	locations[6] = {false,false,false,false,false,false};
+	int			testLocation;
+	static int	moveTimer = 50;
+	idVec3		enemyMove;
+
+	if (moveTimer == 0)
+	{
+		moveTimer = 100;
+		testLocation = rand() % 10;
+		if (!locations[testLocation])
+		{
+			if (name == "monster_slimy_transfer") //mon1
+			{
+				locations[mon1Location] = false;
+				mon1Location = testLocation;
+			}
+			/*else if (name == "monster_something") //mon2
+			{
+				locations[mon2Location] = false;
+				mon2Location = testLocation;
+			}*/
+			locations[testLocation] = true;
+			originChange(enemyMove, testLocation);
+			SetOrigin( enemyMove );
+		}
+	}
+	else moveTimer--;
+	gameLocal.Printf("%i\n", moveTimer);
 }
 
 /*

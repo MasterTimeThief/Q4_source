@@ -221,7 +221,7 @@ rvWeaponHyperblaster::State_Fire
 ================
 */
 stateResult_t rvWeaponHyperblaster::State_Fire ( const stateParms_t& parms ) {
-	/*enum {
+	enum {
 		STAGE_INIT,
 		STAGE_WAIT,
 	};	
@@ -229,13 +229,13 @@ stateResult_t rvWeaponHyperblaster::State_Fire ( const stateParms_t& parms ) {
 		case STAGE_INIT:
 			SpinUp ( );
 			nextAttackTime = gameLocal.time + (fireRate * owner->PowerUpModifier ( PMOD_FIRERATE ));
-			Attack ( false, 1, spread, 0, 1.0f );
+			//Attack ( false, 1, spread, 0, 1.0f );
 			if ( ClipSize() ) {
 				viewModel->SetShaderParm ( HYPERBLASTER_SPARM_BATTERY, (float)AmmoInClip()/ClipSize() );
 			} else {
 				viewModel->SetShaderParm ( HYPERBLASTER_SPARM_BATTERY, 1.0f );		
 			}
-			PlayAnim ( ANIMCHANNEL_ALL, "fire", 0 );	
+			//PlayAnim ( ANIMCHANNEL_ALL, "fire", 0 );*/	
 			return SRESULT_STAGE ( STAGE_WAIT );
 	
 		case STAGE_WAIT:		
@@ -249,8 +249,7 @@ stateResult_t rvWeaponHyperblaster::State_Fire ( const stateParms_t& parms ) {
 			}		
 			return SRESULT_WAIT;
 	}
-	return SRESULT_ERROR;*/
-	return SRESULT_DONE;
+	return SRESULT_ERROR;
 }
 
 /*

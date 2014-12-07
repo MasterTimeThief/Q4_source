@@ -7,6 +7,8 @@ AI.cpp
 */
 
 #include <cstdlib>
+#include <ctime>
+#include <cstring>
 #include "../../idlib/precompiled.h"
 #pragma hdrstop
 
@@ -1131,26 +1133,73 @@ bool idAI::DoDormantTests ( void ) {
 	return idActor::DoDormantTests ( );
 }
 
-/*bool moveCheck (int &oldLoc, int newLoc, bool listLoc[])
+bool moveCheck (int oldLoc, int newLoc, bool listLoc[])
 {
 	if (listLoc[newLoc]) return false;
-	if (oldLoc == 1
-}*/
+	if ((oldLoc != 10 && oldLoc < 0 && gameLocal.cameraLocation[oldLoc]) || gameLocal.cameraLocation[newLoc]) return false;
+	if (newLoc == 0) // office
+	{
+		if (oldLoc == 1) return true;
+	}
+	
+	
+	else if (newLoc == 1) // tunnel
+	{
+		if (oldLoc == 0 || oldLoc == 2 || oldLoc == 4) return true;
+	}
+	
+	
+	else if (newLoc == 2) // grenade
+	{
+		if (oldLoc == 1 || oldLoc == 3) return true;
+	}
+	
+	
+	else if (newLoc == 3) // corner
+	{
+		if (oldLoc == 2 || oldLoc == 4) return true;
+	}
+	
+	
+	else if (newLoc == 4) // center
+	{
+		if (oldLoc == 3 || oldLoc == 1 || oldLoc == 10) return true;
+	}
+	else return false;
+}
 
 void originChange(idVec3 &originRef, int location)
 {
-	if (location % 2 == 1) //office
+	if (location == 0) //office
 	{
 		originRef.x = 325;
-		originRef.y = -105;
+		originRef.y = -75; // -105 is in your face
 		originRef.z = 1060;
 	}
-	else if (location % 2 == 0) //center
+	else if (location == 1) //tunnel
+	{
+		originRef.x = 225;
+		originRef.y = 825;
+		originRef.z = 325;
+	}
+	else if (location == 2) //grenade
+	{
+		originRef.x = 1725;
+		originRef.y = 1125;
+		originRef.z = 1030;
+	}
+	else if (location == 3) //corner
+	{
+		originRef.x = 1850;
+		originRef.y = 200;
+		originRef.z = 900;
+	}
+	else if (location == 4) //center
 	{
 		originRef.x = 1280;
 		originRef.y = 784;
 		originRef.z = 464;
-	} 
+	}
 }
 
 /*
@@ -1161,9 +1210,9 @@ idAI::Think
 void idAI::Think( void ) {
 
 	// if we are completely closed off from the player, don't do anything at all
-	if ( CheckDormant() ) {
+	/*if ( CheckDormant() ) {
 		return;
-	}
+	}*/
 
 	// Simple think this frame?
 	aifl.simpleThink = aiManager.IsSimpleThink ( this );
@@ -1268,36 +1317,59 @@ void idAI::Think( void ) {
 	}
 
 	//CUSTOM THINK
-	static int	mon1Location = 0;
-	static int	mon2Location = 0;
-	static bool	locations[6] = {false,false,false,false,false,false};
+	static int	mon1Location = 10;
+	static int	mon2Location = 10;
+	static bool	locations[5] = {false,false,false,false,false};
 	int			testLocation;
-	static int	moveTimer = 50;
+	static int	moveTimer = 200;
 	idVec3		enemyMove;
+	bool		canMove;
 
-	if (moveTimer == 0)
+	if (moveTimer == 0 && gameLocal.playerWin == false && gameLocal.playerLose == false)
 	{
-		moveTimer = 100;
-		testLocation = rand() % 10;
-		if (!locations[testLocation])
+		moveTimer = 200;
+		srand(time(0));
+		testLocation = rand() % 5;
+
+		if		(strcmp(name.c_str(),"Animatronic_1") == 0) canMove = moveCheck(mon1Location, testLocation, locations);
+		else if (strcmp(name.c_str(),"Animatronic_2") == 0) canMove = moveCheck(mon2Location, testLocation, locations);
+
+		if (canMove)
+		//if (!locations[testLocation])
 		{
-			if (name == "monster_slimy_transfer") //mon1
+			gameLocal.Printf("1::%s::\n", name.c_str());
+			if (strcmp(name.c_str(),"Animatronic_1") == 0 && mon1Location != testLocation) //mon1
 			{
-				locations[mon1Location] = false;
+				gameLocal.Printf("enemy1---Old:%i	New:%i \n", mon1Location, testLocation);
+				if (mon1Location != 10) locations[mon1Location] = false;
 				mon1Location = testLocation;
 			}
-			/*else if (name == "monster_something") //mon2
+			else if (strcmp(name.c_str(),"Animatronic_2") == 0 && mon2Location != testLocation) //mon1
 			{
-				locations[mon2Location] = false;
+				gameLocal.Printf("enemy2---Old:%i	New:%i \n", mon2Location, testLocation);
+				if (mon2Location != 10) locations[mon2Location] = false;
 				mon2Location = testLocation;
-			}*/
+			}
 			locations[testLocation] = true;
 			originChange(enemyMove, testLocation);
 			SetOrigin( enemyMove );
+			gameLocal.Printf("2::%s::\n", name.c_str());
 		}
 	}
 	else moveTimer--;
-	gameLocal.Printf("%i\n", moveTimer);
+
+	//gameLocal.Printf("%i\n", moveTimer);
+	gameLocal.Printf("ENEMY ");
+	if (locations[0]) gameLocal.Printf(":1:");
+	else gameLocal.Printf(":0:");
+	if (locations[1]) gameLocal.Printf(":1:");
+	else gameLocal.Printf(":0:");
+	if (locations[2]) gameLocal.Printf(":1:");
+	else gameLocal.Printf(":0:");
+	if (locations[3]) gameLocal.Printf(":1:");
+	else gameLocal.Printf(":0:");
+	if (locations[4]) gameLocal.Printf(":1:\n");
+	else gameLocal.Printf(":0:\n");
 }
 
 /*

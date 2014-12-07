@@ -519,6 +519,12 @@ public:
 
 // RAVEN END
 
+	bool				cameraLocation[5];
+	bool				flashOn;
+	bool				enemyZero;
+	bool				playerWin;
+	bool				playerLose;
+
 	int filterMod;
 	idList<idStr> modList;
 
@@ -681,7 +687,7 @@ public:
 	void					Error( const char *fmt, ... ) const;
 
 							// Initializes all map variables common to both save games and spawned games
-	void					LoadMap( const char *mapName, int randseed );
+	void					LoadMap( const char *mapName, int randseed );		
 
 	void					LocalMapRestart( int instance = -1 );
 	void					MapRestart( int instance = -1 );

@@ -635,7 +635,7 @@ Fire the weapon
 ================
 */
 stateResult_t rvWeaponNailgun::State_Fire( const stateParms_t& parms ) {
-	/*enum {
+	enum {
 		STAGE_INIT,
 		STAGE_FIRE,
 		STAGE_FIREWAIT,
@@ -661,16 +661,16 @@ stateResult_t rvWeaponNailgun::State_Fire( const stateParms_t& parms ) {
 				return SRESULT_STAGE ( STAGE_DONE );
 			}
 			if ( mods & NAILGUN_MOD_ROF_AMMO ) {
-				PlayCycle ( ANIMCHANNEL_LEGS, "fire_fast", 4 );
+				//PlayCycle ( ANIMCHANNEL_LEGS, "fire_fast", 4 );
 			} else {
-				PlayCycle ( ANIMCHANNEL_LEGS, "fire_slow", 4 );
+				//PlayCycle ( ANIMCHANNEL_LEGS, "fire_slow", 4 );
 			}
 
 			if ( wsfl.zoom ) {				
-				Attack ( true, 1, spread, 0.0f, 1.0f );
+				//Attack ( true, 1, spread, 0.0f, 1.0f );
 				nextAttackTime = gameLocal.time + (altFireRate * owner->PowerUpModifier ( PMOD_FIRERATE ));
 			} else {
-				Attack ( false, 1, spread, 0.0f, 1.0f );
+				//Attack ( false, 1, spread, 0.0f, 1.0f );
 				nextAttackTime = gameLocal.time + (fireRate * owner->PowerUpModifier ( PMOD_FIRERATE ));
 			}
 			
@@ -694,7 +694,7 @@ stateResult_t rvWeaponNailgun::State_Fire( const stateParms_t& parms ) {
 			
 		case STAGE_DONE:
 			if ( clipSize && wsfl.attack && !wsfl.lowerWeapon && !wsfl.reload ) {
-				PlayCycle ( ANIMCHANNEL_LEGS, "spinempty", 4 );
+				//PlayCycle ( ANIMCHANNEL_LEGS, "spinempty", 4 );
 				return SRESULT_STAGE ( STAGE_SPINEMPTY );
 			}
 			DrumSpin ( NAILGUN_DRUMSPEED_SLOW, 4 );
@@ -711,8 +711,7 @@ stateResult_t rvWeaponNailgun::State_Fire( const stateParms_t& parms ) {
 			}
 			return SRESULT_WAIT;
 	}
-	return SRESULT_ERROR;*/
-	return SRESULT_DONE;
+	return SRESULT_ERROR;
 }
 
 /*

@@ -410,6 +410,16 @@ void idGameLocal::Clear( void ) {
 		networkSystem->UseSortFunction( filterByMod, false );
 	}
 	clientAckSequence = -1;
+
+	cameraLocation[0] = false;
+	cameraLocation[1] = false;
+	cameraLocation[2] = false;
+	cameraLocation[3] = false;
+	cameraLocation[4] = false;
+	flashOn = false;
+	enemyZero = false;
+	playerWin = false;
+	playerLose = false;
 }
 
 /*

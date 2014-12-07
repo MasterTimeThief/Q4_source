@@ -138,14 +138,14 @@ rvWeaponGrenadeLauncher::State_Fire
 ================
 */
 stateResult_t rvWeaponGrenadeLauncher::State_Fire ( const stateParms_t& parms ) {
-	/*enum {
+	enum {
 		STAGE_INIT,
 		STAGE_WAIT,
 	};	
 	switch ( parms.stage ) {
 		case STAGE_INIT:
 			nextAttackTime = gameLocal.time + (fireRate * owner->PowerUpModifier ( PMOD_FIRERATE ));
-			Attack ( false, 1, spread, 0, 1.0f );
+			//Attack ( false, 1, spread, 0, 1.0f );
 			PlayAnim ( ANIMCHANNEL_ALL, GetFireAnim(), 0 );	
 			return SRESULT_STAGE ( STAGE_WAIT );
 	
@@ -160,8 +160,7 @@ stateResult_t rvWeaponGrenadeLauncher::State_Fire ( const stateParms_t& parms ) 
 			}		
 			return SRESULT_WAIT;
 	}
-	return SRESULT_ERROR;*/
-	return SRESULT_DONE;
+	return SRESULT_ERROR;
 }
 
 /*

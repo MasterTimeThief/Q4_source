@@ -1136,7 +1136,7 @@ bool idAI::DoDormantTests ( void ) {
 bool moveCheck (int oldLoc, int newLoc, bool listLoc[])
 {
 	if (listLoc[newLoc]) return false;
-	if ((oldLoc != 10 && oldLoc < 0 && gameLocal.cameraLocation[oldLoc]) || gameLocal.cameraLocation[newLoc]) return false;
+	if (oldLoc > 0 && (gameLocal.cameraLocation[oldLoc] || gameLocal.cameraLocation[newLoc])) return false;
 	if (newLoc == 0) // office
 	{
 		if (oldLoc == 1) return true;
@@ -1163,7 +1163,7 @@ bool moveCheck (int oldLoc, int newLoc, bool listLoc[])
 	
 	else if (newLoc == 4) // center
 	{
-		if (oldLoc == 3 || oldLoc == 1 || oldLoc == 10) return true;
+		if (oldLoc == 3 || oldLoc == 1 || oldLoc == -1) return true;
 	}
 	else return false;
 }
@@ -1317,59 +1317,127 @@ void idAI::Think( void ) {
 	}
 
 	//CUSTOM THINK
-	static int	mon1Location = 10;
-	static int	mon2Location = 10;
+	static int	mon1Location = -1;
+	static int	mon2Location = -1;
 	static bool	locations[5] = {false,false,false,false,false};
 	int			testLocation;
-	static int	moveTimer = 200;
+	static int	moveTimer = 0;
 	idVec3		enemyMove;
 	bool		canMove;
+	static int	deathTimer = 200;
+	int			whichOne;
 
-	if (moveTimer == 0 && gameLocal.playerWin == false && gameLocal.playerLose == false)
+	if (strcmp(name.c_str(),"Animatronic_1") == 0) 
 	{
-		moveTimer = 200;
+		whichOne = 1;
+		if (gameLocal.cameraLocation[0] == true && mon1Location == 0) gameLocal.enemy1Zero = true;
+		else gameLocal.enemy1Zero = false;
+	}
+	else if (strcmp(name.c_str(),"Animatronic_2") == 0) 
+	{
+		whichOne = 2;
+		if (gameLocal.cameraLocation[0] == true && mon2Location == 0) gameLocal.enemy2Zero = true;
+		else gameLocal.enemy2Zero = false;
+	}
+
+	//Check if enemy can move every 100 cycles
+	if (moveTimer == 100 && gameLocal.playerWin == false && gameLocal.playerLose == false)
+	{
+		moveTimer = 0;
 		srand(time(0));
 		testLocation = rand() % 5;
 
-		if		(strcmp(name.c_str(),"Animatronic_1") == 0) canMove = moveCheck(mon1Location, testLocation, locations);
-		else if (strcmp(name.c_str(),"Animatronic_2") == 0) canMove = moveCheck(mon2Location, testLocation, locations);
+		if (whichOne == 1) 
+		{
+			canMove = moveCheck(mon1Location, testLocation, locations);
+		}
+		else if (whichOne == 2) 
+		{
+			canMove = moveCheck(mon2Location, testLocation, locations);
+		}
 
 		if (canMove)
-		//if (!locations[testLocation])
 		{
-			gameLocal.Printf("1::%s::\n", name.c_str());
-			if (strcmp(name.c_str(),"Animatronic_1") == 0 && mon1Location != testLocation) //mon1
+			//gameLocal.Printf("1::%s::\n", name.c_str());
+			if (whichOne == 1 && mon1Location != testLocation) //mon1
 			{
 				gameLocal.Printf("enemy1---Old:%i	New:%i \n", mon1Location, testLocation);
-				if (mon1Location != 10) locations[mon1Location] = false;
+				if (mon1Location != -1) locations[mon1Location] = false;
 				mon1Location = testLocation;
 			}
-			else if (strcmp(name.c_str(),"Animatronic_2") == 0 && mon2Location != testLocation) //mon1
+			else if (whichOne == 2 && mon2Location != testLocation) //mon2
 			{
 				gameLocal.Printf("enemy2---Old:%i	New:%i \n", mon2Location, testLocation);
-				if (mon2Location != 10) locations[mon2Location] = false;
+				if (mon2Location != -1) locations[mon2Location] = false;
 				mon2Location = testLocation;
 			}
 			locations[testLocation] = true;
 			originChange(enemyMove, testLocation);
 			SetOrigin( enemyMove );
-			gameLocal.Printf("2::%s::\n", name.c_str());
+			//gameLocal.Printf("2::%s::\n", name.c_str());
 		}
 	}
-	else moveTimer--;
+	else moveTimer++;
 
-	//gameLocal.Printf("%i\n", moveTimer);
-	gameLocal.Printf("ENEMY ");
-	if (locations[0]) gameLocal.Printf(":1:");
-	else gameLocal.Printf(":0:");
-	if (locations[1]) gameLocal.Printf(":1:");
-	else gameLocal.Printf(":0:");
-	if (locations[2]) gameLocal.Printf(":1:");
-	else gameLocal.Printf(":0:");
-	if (locations[3]) gameLocal.Printf(":1:");
-	else gameLocal.Printf(":0:");
-	if (locations[4]) gameLocal.Printf(":1:\n");
-	else gameLocal.Printf(":0:\n");
+	//If player has won, move enemy to spawn location
+	if (gameLocal.playerWin == true)
+	{
+		if (whichOne == 1 && mon1Location != -1)
+		{
+			enemyMove.x = 1480;
+			enemyMove.y = 584;
+			enemyMove.z = 464;
+			SetOrigin( enemyMove );
+			mon1Location = -1;
+		}
+		else if (whichOne == 2 && mon2Location != -1)
+		{
+			enemyMove.x = 1480;
+			enemyMove.y = 528;
+			enemyMove.z = 456;
+			SetOrigin( enemyMove );
+			mon2Location = -1;
+		}
+	}
+
+	//If player and enemy are in office, check for player death
+	if (gameLocal.enemy1Zero == true || gameLocal.enemy2Zero == true)
+	{
+		if (gameLocal.flashOn == true) deathTimer == 200;
+		else if (gameLocal.flashOn != true && deathTimer > 0) deathTimer--;
+
+		//if (deathTimer % 33 == 0) gameLocal.Printf("%i\n", deathTimer);
+
+		if (deathTimer <= 0 && gameLocal.playerLose == false)
+		{
+			gameLocal.playerLose = true;
+			enemyMove.x = 325;
+			enemyMove.y = -105;
+			enemyMove.z = 1060;
+			SetOrigin( enemyMove );
+		}
+		//gameLocal.Printf("DeathTimer: %i\n\n", deathTimer);
+	}
+	else deathTimer = 200;
+
+	/*if (whichOne == 1)
+	{
+		gameLocal.Printf("ENEMY1");
+		if (mon1Location == 0) gameLocal.Printf(":1::0::0::0::0:\n");
+		if (mon1Location == 1) gameLocal.Printf(":0::1::0::0::0:\n");
+		if (mon1Location == 2) gameLocal.Printf(":0::0::1::0::0:\n");
+		if (mon1Location == 3) gameLocal.Printf(":0::0::0::1::0:\n");
+		if (mon1Location == 4) gameLocal.Printf(":0::0::0::0::1:\n");
+	}
+	else if (whichOne == 2)
+	{
+		gameLocal.Printf("ENEMY2");
+		if (mon2Location == 0) gameLocal.Printf(":1::0::0::0::0:\n");
+		if (mon2Location == 1) gameLocal.Printf(":0::1::0::0::0:\n");
+		if (mon2Location == 2) gameLocal.Printf(":0::0::1::0::0:\n");
+		if (mon2Location == 3) gameLocal.Printf(":0::0::0::1::0:\n");
+		if (mon2Location == 4) gameLocal.Printf(":0::0::0::0::1:\n");
+	}*/
 }
 
 /*

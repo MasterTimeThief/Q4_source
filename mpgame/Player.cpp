@@ -9669,8 +9669,8 @@ void idPlayer::Think( void ) {
 	
 	//CUSTOM THINK
 	static int		nightTimer = 0;
-	static int		batteryTimer = 0;
-	static int		oldWeapon = 0;
+	static int		batteryTimer = 1;
+	static int		oldWeapon = 1;
 	int				armorCount;
 	idVec3			cameraMove;
 	idAngles		cameraAngle;
@@ -9680,7 +9680,7 @@ void idPlayer::Think( void ) {
 
 	if (!deathTrack)
 	{
-		if (inventory.armor <= 0)
+		if (inventory.armor <= 0 || gameLocal.playerLose == true)
 		{
 			if (flashlightOn == true) ToggleFlashlight();
 			flashlightOn = false;
@@ -9743,7 +9743,8 @@ void idPlayer::Think( void ) {
 		SetViewAngles( cameraAngle );
 		SetOrigin( cameraMove );
 	}
-	
+	/*
+	if (nightTimer % 10 == 0) {
 	gameLocal.Printf("\nCAMERA");
 	if (gameLocal.cameraLocation[0]) gameLocal.Printf(":1:");
 	else gameLocal.Printf(":0:");
@@ -9755,25 +9756,35 @@ void idPlayer::Think( void ) {
 	else gameLocal.Printf(":0:");
 	if (gameLocal.cameraLocation[4]) gameLocal.Printf(":1:\n");
 	else gameLocal.Printf(":0:\n");
+	}
+	*/
 
-	if ((nightTimer % 2500) == 0)
+	if ((nightTimer % 1700) == 0)
 	{
 		if (health == 12) health = 1;
 		else if (health < 6) health++;
 	}
+
+	if (health == 6) gameLocal.playerWin = true;
 	
-	if ((flashlightOn == true && inventory.armor > 0 ) || (idealWeapon > 1 && !deathTrack))
+	//use up battery if the flashlight's on
+	if (flashlightOn == true && inventory.armor > 0 )
 	{
 		batteryTimer++;
 		gameLocal.flashOn = true;
-		if ((batteryTimer % 100) == 0)
-		{
-			armorCount = inventory.armor;
-			armorCount--;
-			inventory.armor = armorCount;
-		}
 	}
 	else if (flashlightOn == false) gameLocal.flashOn = false;
+
+	//use up battery if camera is not in office
+	if(oldWeapon > 1 && !deathTrack) batteryTimer++;
+
+	//decrement the armor for every 100 cycles the battery's been in use
+	if ((batteryTimer % 100) == 0)
+	{
+		armorCount = inventory.armor;
+		armorCount--;
+		inventory.armor = armorCount;
+	}
 }
 
 /*

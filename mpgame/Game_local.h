@@ -521,7 +521,8 @@ public:
 
 	bool				cameraLocation[5];
 	bool				flashOn;
-	bool				enemyZero;
+	bool				enemy1Zero;
+	bool				enemy2Zero;
 	bool				playerWin;
 	bool				playerLose;
 

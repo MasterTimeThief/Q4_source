@@ -417,7 +417,8 @@ void idGameLocal::Clear( void ) {
 	cameraLocation[3] = false;
 	cameraLocation[4] = false;
 	flashOn = false;
-	enemyZero = false;
+	enemy1Zero = false;
+	enemy2Zero = false;
 	playerWin = false;
 	playerLose = false;
 }

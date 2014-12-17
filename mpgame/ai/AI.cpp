@@ -1317,9 +1317,9 @@ void idAI::Think( void ) {
 	}
 
 	//CUSTOM THINK
-	static int	mon1Location = -1;
-	static int	mon2Location = -1;
-	static bool	locations[5] = {false,false,false,false,false};
+	//static int	mon1Location = gameLocal.mon1Loc;
+	//static int	mon2Location = gameLocal.mon2Loc;
+	//static bool	locations[5] = {false,false,false,false,false};
 	int			testLocation;
 	static int	moveTimer = 0;
 	idVec3		enemyMove;
@@ -1327,16 +1327,23 @@ void idAI::Think( void ) {
 	static int	deathTimer = 200;
 	int			whichOne;
 
+	/*if (mon1Location == -1 && mon2Location == -1)
+	{
+		gameLocal.deathTrack	= false;
+		gameLocal.playerWin		= false;
+		gameLocal.playerLose	= false;
+	}*/
+	
 	if (strcmp(name.c_str(),"Animatronic_1") == 0) 
 	{
 		whichOne = 1;
-		if (gameLocal.cameraLocation[0] == true && mon1Location == 0) gameLocal.enemy1Zero = true;
+		if (gameLocal.cameraLocation[0] == true && gameLocal.mon1Loc == 0) gameLocal.enemy1Zero = true;
 		else gameLocal.enemy1Zero = false;
 	}
 	else if (strcmp(name.c_str(),"Animatronic_2") == 0) 
 	{
 		whichOne = 2;
-		if (gameLocal.cameraLocation[0] == true && mon2Location == 0) gameLocal.enemy2Zero = true;
+		if (gameLocal.cameraLocation[0] == true && gameLocal.mon2Loc == 0) gameLocal.enemy2Zero = true;
 		else gameLocal.enemy2Zero = false;
 	}
 
@@ -1349,29 +1356,29 @@ void idAI::Think( void ) {
 
 		if (whichOne == 1) 
 		{
-			canMove = moveCheck(mon1Location, testLocation, locations);
+			canMove = moveCheck(gameLocal.mon1Loc, testLocation, gameLocal.locations);
 		}
 		else if (whichOne == 2) 
 		{
-			canMove = moveCheck(mon2Location, testLocation, locations);
+			canMove = moveCheck(gameLocal.mon2Loc, testLocation, gameLocal.locations);
 		}
 
 		if (canMove)
 		{
 			//gameLocal.Printf("1::%s::\n", name.c_str());
-			if (whichOne == 1 && mon1Location != testLocation) //mon1
+			if (whichOne == 1 && gameLocal.mon1Loc != testLocation) //mon1
 			{
-				gameLocal.Printf("enemy1---Old:%i	New:%i \n", mon1Location, testLocation);
-				if (mon1Location != -1) locations[mon1Location] = false;
-				mon1Location = testLocation;
+				gameLocal.Printf("enemy1---Old:%i	New:%i \n", gameLocal.mon1Loc, testLocation);
+				if (gameLocal.mon1Loc != -1) gameLocal.locations[gameLocal.mon1Loc] = false;
+				gameLocal.mon1Loc = testLocation;
 			}
-			else if (whichOne == 2 && mon2Location != testLocation) //mon2
+			else if (whichOne == 2 && gameLocal.mon2Loc != testLocation) //mon2
 			{
-				gameLocal.Printf("enemy2---Old:%i	New:%i \n", mon2Location, testLocation);
-				if (mon2Location != -1) locations[mon2Location] = false;
-				mon2Location = testLocation;
+				gameLocal.Printf("enemy2---Old:%i	New:%i \n", gameLocal.mon2Loc, testLocation);
+				if (gameLocal.mon2Loc != -1) gameLocal.locations[gameLocal.mon2Loc] = false;
+				gameLocal.mon2Loc = testLocation;
 			}
-			locations[testLocation] = true;
+			gameLocal.locations[testLocation] = true;
 			originChange(enemyMove, testLocation);
 			SetOrigin( enemyMove );
 			//gameLocal.Printf("2::%s::\n", name.c_str());
@@ -1382,21 +1389,21 @@ void idAI::Think( void ) {
 	//If player has won, move enemy to spawn location
 	if (gameLocal.playerWin == true)
 	{
-		if (whichOne == 1 && mon1Location != -1)
+		if (whichOne == 1 && gameLocal.mon1Loc != -1)
 		{
 			enemyMove.x = 1480;
 			enemyMove.y = 584;
 			enemyMove.z = 464;
 			SetOrigin( enemyMove );
-			mon1Location = -1;
+			gameLocal.mon1Loc = -1;
 		}
-		else if (whichOne == 2 && mon2Location != -1)
+		else if (whichOne == 2 && gameLocal.mon2Loc != -1)
 		{
 			enemyMove.x = 1480;
 			enemyMove.y = 528;
 			enemyMove.z = 456;
 			SetOrigin( enemyMove );
-			mon2Location = -1;
+			gameLocal.mon2Loc = -1;
 		}
 	}
 

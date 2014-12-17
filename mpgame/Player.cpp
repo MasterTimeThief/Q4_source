@@ -1505,7 +1505,19 @@ void idPlayer::Init( void ) {
 	const idDict		*userInfo = GetUserInfo();
 
 	Hide();
-	
+
+	//CUSTOM VARIABLES
+	gameLocal.deathTrack	= false;
+	gameLocal.playerWin		= false;
+	gameLocal.playerLose	= false;
+	gameLocal.mon1Loc		= -1;
+	gameLocal.mon2Loc		= -1;
+	gameLocal.locations[0] = false;
+	gameLocal.locations[1] = false;
+	gameLocal.locations[2] = false;
+	gameLocal.locations[3] = false;
+	gameLocal.locations[4] = false;
+
 	noclip					= false;
 	godmode					= false;
 	godmodeDamage			= 0;
@@ -9668,23 +9680,19 @@ void idPlayer::Think( void ) {
 	inBuyZonePrev = false;
 	
 	//CUSTOM THINK
-	static int		nightTimer = 0;
-	static int		batteryTimer = 1;
-	static int		oldWeapon = 1;
 	int				armorCount;
 	idVec3			cameraMove;
 	idAngles		cameraAngle;
-	static bool		deathTrack = false;
 
 	cameraAngle = spawnAngles;
 
-	if (!deathTrack)
+	if (!gameLocal.deathTrack)
 	{
 		if (inventory.armor <= 0 || gameLocal.playerLose == true)
 		{
 			if (flashlightOn == true) ToggleFlashlight();
 			flashlightOn = false;
-			deathTrack = true;
+			gameLocal.deathTrack = true;
 			cameraMove.x = 325;
 			cameraMove.y = -125;
 			cameraMove.z = 1060;
@@ -9692,74 +9700,67 @@ void idPlayer::Think( void ) {
 			SetViewAngles( cameraAngle );
 			SetOrigin( cameraMove );
 		}
-		nightTimer++;
+		gameLocal.nightTimer++;
 	}
 
-	
-	//StartSound( "snd_skipcinematic", SND_CHANNEL_ANY, 0, false, NULL );
 	//Teleport player when weapon is switched
+	/*gameLocal.Printf("Old: %i  Curr: %i  ",gameLocal.oldWeapon,currentWeapon);
+	gameLocal.Printf("Deathtrack: ");
+	if (gameLocal.deathTrack) gameLocal.Printf("TRUE\n");
+	else gameLocal.Printf("FALSE\n");*/
 
-	if (oldWeapon != idealWeapon && !deathTrack)
+	if (gameLocal.oldWeapon != currentWeapon && !gameLocal.deathTrack)
 	{
-		gameLocal.cameraLocation[oldWeapon-1] = false;
+		gameLocal.cameraLocation[gameLocal.oldWeapon-1] = false;
 		gameLocal.cameraLocation[idealWeapon-1] = true;
-		oldWeapon = idealWeapon;
-		if (idealWeapon == 1) //M. Gun - Office
+		gameLocal.oldWeapon = currentWeapon;
+		gameLocal.Printf("==START==\n");
+		if (gameLocal.oldWeapon == 1) //M. Gun - Office
 		{
 			cameraMove.x = 325;
 			cameraMove.y = -125;
 			cameraMove.z = 1060;
 			cameraAngle.yaw = 90;
-			StartSound( "snd_skipcinematic", SND_CHANNEL_ANY, 0, false, NULL );
+			gameLocal.Printf("Office\n");
 		}
-		if (idealWeapon == 2) //Shotgun - Tunnel Opening
+		if (gameLocal.oldWeapon == 2) //Shotgun - Tunnel Opening
 		{
 			cameraMove.x = 325;
 			cameraMove.y = 925;
 			cameraMove.z = 325;
 			cameraAngle.yaw = 225;
+			gameLocal.Printf("Tunnel\n");
 		}
-		if (idealWeapon == 3) //Hyp. Blast - Lightning Gun spawn
+		if (gameLocal.oldWeapon == 3) //Hyp. Blast - Lightning Gun spawn
 		{
 			cameraMove.x = 1725;
 			cameraMove.y = 1300;
 			cameraMove.z = 1030;
 			cameraAngle.yaw = 270;
+			gameLocal.Printf("Grenade\n");
 		}
-		if (idealWeapon == 4) //G. Launcher - Upper Hall Corner
+		if (gameLocal.oldWeapon == 4) //G. Launcher - Upper Hall Corner
 		{
 			cameraMove.x = 1850;
 			cameraMove.y = 0;
 			cameraMove.z = 900;
 			cameraAngle.yaw = 90;
+			gameLocal.Printf("Corner\n");
 		}
-		if (idealWeapon == 5) //Nailgun - Center Circle
+		if (gameLocal.oldWeapon == 5) //Nailgun - Center Circle
 		{
 			cameraMove.x = 1025;
 			cameraMove.y = 800;
 			cameraMove.z = 460;
 			cameraAngle.yaw = 0;
+			gameLocal.Printf("Center\n");
 		}
 		SetViewAngles( cameraAngle );
 		SetOrigin( cameraMove );
+		gameLocal.Printf("==END==\n");
 	}
-	/*
-	if (nightTimer % 10 == 0) {
-	gameLocal.Printf("\nCAMERA");
-	if (gameLocal.cameraLocation[0]) gameLocal.Printf(":1:");
-	else gameLocal.Printf(":0:");
-	if (gameLocal.cameraLocation[1]) gameLocal.Printf(":1:");
-	else gameLocal.Printf(":0:");
-	if (gameLocal.cameraLocation[2]) gameLocal.Printf(":1:");
-	else gameLocal.Printf(":0:");
-	if (gameLocal.cameraLocation[3]) gameLocal.Printf(":1:");
-	else gameLocal.Printf(":0:");
-	if (gameLocal.cameraLocation[4]) gameLocal.Printf(":1:\n");
-	else gameLocal.Printf(":0:\n");
-	}
-	*/
 
-	if ((nightTimer % 1700) == 0)
+	if ((gameLocal.nightTimer % 1700) == 0)
 	{
 		if (health == 12) health = 1;
 		else if (health < 6) health++;
@@ -9770,16 +9771,16 @@ void idPlayer::Think( void ) {
 	//use up battery if the flashlight's on
 	if (flashlightOn == true && inventory.armor > 0 )
 	{
-		batteryTimer++;
+		gameLocal.batteryTimer++;
 		gameLocal.flashOn = true;
 	}
 	else if (flashlightOn == false) gameLocal.flashOn = false;
 
 	//use up battery if camera is not in office
-	if(oldWeapon > 1 && !deathTrack) batteryTimer++;
+	if(gameLocal.oldWeapon > 1 && !gameLocal.deathTrack) gameLocal.batteryTimer++;
 
 	//decrement the armor for every 100 cycles the battery's been in use
-	if ((batteryTimer % 100) == 0)
+	if ((gameLocal.batteryTimer % 100) == 0)
 	{
 		armorCount = inventory.armor;
 		armorCount--;

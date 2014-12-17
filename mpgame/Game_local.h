@@ -525,6 +525,13 @@ public:
 	bool				enemy2Zero;
 	bool				playerWin;
 	bool				playerLose;
+	int					nightTimer;
+	int					batteryTimer;
+	int					oldWeapon;
+	bool				deathTrack;
+	int					mon1Loc;
+	int					mon2Loc;
+	bool				locations[5];
 
 	int filterMod;
 	idList<idStr> modList;

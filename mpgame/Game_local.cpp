@@ -421,6 +421,17 @@ void idGameLocal::Clear( void ) {
 	enemy2Zero = false;
 	playerWin = false;
 	playerLose = false;
+	nightTimer = 0;
+	batteryTimer = 1;
+	oldWeapon = 1;
+	deathTrack = false;
+	mon1Loc = -1;
+	mon2Loc = -1;
+	locations[0] = false;
+	locations[1] = false;
+	locations[2] = false;
+	locations[3] = false;
+	locations[4] = false;
 }
 
 /*

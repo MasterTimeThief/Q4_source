@@ -1327,6 +1327,25 @@ void idAI::Think( void ) {
 	static int	deathTimer = 200;
 	int			whichOne;
 
+	//LOU COMMENTS START
+
+	/*
+	Instead of making deathTimer or moveTimer a static ints, you could have made them ints in the 
+	AI class, then made:
+
+	deathTimer = gameLocal.realClientTime + (amount of miliseconds) or (amount of seconds * 1000)
+
+	Then you could have said
+	if(gameLocal.realClientTime >= deathTimer)
+	{
+		//do death stuff
+	}
+
+	This way you are setting the timer by seconds instead of frames.
+
+
+	*/
+
 	/*if (mon1Location == -1 && mon2Location == -1)
 	{
 		gameLocal.deathTrack	= false;
